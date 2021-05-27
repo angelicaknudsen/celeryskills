@@ -67,6 +67,7 @@ void autonomous() {
 //#17 is upper uptakes and #16 is lower uptakes
 	MotorGroup uptakesOut({-17, -16});
 	MotorGroup uptakesSpit({17, -16});
+	Motor lowerUptake(-16);
 
 	MotorGroup forwardIntake({8, -7, 12, -1, -2, 11});
 	MotorGroup specialBoi({8, -7, 12, -1, -2, 11, -16});
@@ -137,49 +138,43 @@ void autonomous() {
 	specialBoi.moveRelative(3000,120); pros::delay(2500);
 	uptakesOut.moveRelative(3000, 127);*/
 
-	/*
-	turnLeft.moveRelative(500, 100); pros::delay(250);
-
-	chassisFB->setMaxVelocity(127);
-	chassisFB->moveDistance(-50_in);
-	turnRight.moveRelative(1250, 100); pros::delay(1250);
-	specialBoi.moveRelative(600, 127); pros::delay(750);
-	chassisFB->moveDistance(9_in);
-	uptakesOut.moveRelative(3000, 127); pros::delay(2000);
-	chassisFB->moveDistance(-10_in);*/
-
 	//third part.. finish row hopefully
 	chassisFB->setMaxVelocity(110);
 
-	uptakesOut.moveAbsolute(2000, 127); pros::delay(1250);
+	uptakesOut.moveRelative(2000, 127); pros::delay(1500);
 
 	chassisFB->moveDistance(-5_in);
-	turnLeft.moveAbsolute(1250, 100); pros::delay(1250);
-	intakeOut.moveAbsolute(2000, 127); pros::delay(1000);
+	turnLeft.moveRelative(1250, 100); pros::delay(1250);
+	intakeOut.moveRelative(100, 127); pros::delay(250);
+	intakeOut.moveRelative(250, 127); pros::delay(300);
+	intakeOut.moveRelative(100, 127); pros::delay(250);
+	intakeOut.moveRelative(250, 127); pros::delay(300);
+	intakeOut.moveRelative(100, 127); pros::delay(250);
+	intakeOut.moveRelative(2000, 127); pros::delay(1000);
 	turnLeft.moveRelative(1700, 100); pros::delay(1250);
-	intakeIn.moveRelative(3000, 127);
-	chassisFB->moveDistance(45_in);
-	turnLeft.moveRelative(2000, 100); pros::delay(1000);
-	chassisFB->moveDistance(15_in);
-	uptakesOut.moveRelative(2500, 127); pros::delay(1000);
+
+	intakeIn.moveRelative(4500, 127);
+	chassisFB->moveDistance(37_in);
+	turnRight.moveRelative(1400, 100); pros::delay(700);
+
+	lowerUptake.moveRelative(200, 35);
+	chassisFB->moveDistance(35_in); pros::delay(100);
 	chassisFB->moveDistance(-10_in);
-
-	turnRight.moveRelative(1100, 127); pros::delay(1000);
-	intakeIn.moveRelative(4500, 127);
-	chassisFB->moveDistance(33_in);
-	turnLeft.moveRelative(750, 100); pros::delay(500);
-
-	chassisFB->moveDistance(12_in);
+	chassisFB->moveDistance(10_in);
 	uptakesOut.moveRelative(2500, 127); pros::delay(1000);
-	chassisFB->moveDistance(-12_in);
 
-	turnRight.moveRelative(2500, 127); pros::delay(1000);
-	intakeIn.moveRelative(4500, 127);
-	chassisFB->moveDistance(40_in);
-	turnLeft.moveRelative(1250, 127); pros::delay(1000);
-	chassisFB->moveDistance(15_in);
-	uptakesOut.moveRelative(2500, 127); pros::delay(100);
+	chassisFB->moveDistance(-15_in);
 
+	turnLeft.moveRelative(1000, 100); pros::delay(500);
+	intakeIn.moveRelative(3000, 127);
+	chassisFB->moveDistance(25_in);
+	turnRight.moveRelative(800, 100); pros::delay(500);
+	intakeIn.moveRelative(5000, 127);
+	chassisFB->moveDistance(75_in);
+
+	//home stretch
+	uptakesOut.moveRelative(3000, 127); pros::delay(1500);
+	chassisFB->moveDistance(-10_in);
 /*
 	chassisFB->setMaxVelocity(100);
 	chassisFB->moveDisdtance(2_m);
@@ -222,14 +217,16 @@ void opcontrol() {
 
 	Controller joystick(CONTROLLER_MASTER);
 
-	int leftX, rightY, rightX;
-	bool out, spit;
+	int leftX, rightY, rightX, leftY;
+	bool out, spit, down;
 	bool iForward, iReverse;
 
 	while (true) {
 		leftX = joystick.get_analog(ANALOG_LEFT_X);
 		rightY = joystick.get_analog(ANALOG_RIGHT_Y);
 		rightX = joystick.get_analog(ANALOG_RIGHT_X);
+
+		down = joystick.get_digital(DIGITAL_A); //this is for
 
 		out = joystick.get_digital(DIGITAL_L1);
 		spit = joystick.get_digital(DIGITAL_L2);
@@ -250,11 +247,16 @@ void opcontrol() {
 			uptakeHigh = -127;
 			uptakeLow = 90;
 		}
+		else if (down) {
+			uptakeHigh = -127;
+			uptakeLow = -90;
+		}
 		else {
 			uptakeHigh = 0;
 			uptakeLow = 0;
 		}
 
+		//change later
 		if (iForward) {
 			intakeLeft = 127;
 			intakeRight = 127;
